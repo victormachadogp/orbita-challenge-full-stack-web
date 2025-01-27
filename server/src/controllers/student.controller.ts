@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import StudentService from "../services/student.service";
 import {
   createStudentSchema,
@@ -6,34 +6,32 @@ import {
 } from "../validations/student.validation";
 
 class StudentController {
-  async create(req: Request, res: Response) {
-    try {
-      const { error } = createStudentSchema.validate(req.body);
-      if (error)
-        return res.status(400).json({ error: error.details[0].message });
+  async create(req: Request, res: Response, next: NextFunction) {
+    const { error } = createStudentSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
 
+    try {
       const student = await StudentService.create(req.body);
       res.status(201).json(student);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao criar aluno" });
+      next(error);
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const students = await StudentService.findAll();
       res.json(students);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar alunos" });
+      next(error);
     }
   }
 
-  async update(req: Request, res: Response) {
-    try {
-      const { error } = updateStudentSchema.validate(req.body);
-      if (error)
-        return res.status(400).json({ error: error.details[0].message });
+  async update(req: Request, res: Response, next: NextFunction) {
+    const { error } = updateStudentSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
 
+    try {
       const [updated] = await StudentService.update(
         Number(req.params.id),
         req.body
@@ -44,11 +42,11 @@ class StudentController {
         res.status(404).json({ error: "Aluno não encontrado" });
       }
     } catch (error) {
-      res.status(500).json({ error: "Erro ao atualizar aluno" });
+      next(error);
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const deleted = await StudentService.delete(Number(req.params.id));
       if (deleted) {
@@ -57,7 +55,7 @@ class StudentController {
         res.status(404).json({ error: "Aluno não encontrado" });
       }
     } catch (error) {
-      res.status(500).json({ error: "Erro ao excluir aluno" });
+      next(error);
     }
   }
 }
