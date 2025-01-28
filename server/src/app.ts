@@ -1,20 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
 import sequelize from "./config/database";
 import studentRoutes from "./routes/student.routes";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use("/api", studentRoutes);
+app.use(studentRoutes);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
-  res.status(500).json({
-    error: "Erro interno do servidor",
-    message: process.env.NODE_ENV === "development" ? err.message : undefined,
-  });
-});
+// Middleware de erro global
+app.use(errorHandler);
 
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
