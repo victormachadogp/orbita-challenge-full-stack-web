@@ -7,6 +7,7 @@ const apiUrl = import.meta.env.VITE_API_URL
 export const useStudentStore = defineStore('student', {
   state: () => ({
     students: [] as Student[],
+    currentStudent: null as Student | null,
     loading: false,
     error: null as string | null,
   }),
@@ -19,6 +20,20 @@ export const useStudentStore = defineStore('student', {
         this.students = response.data
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Erro ao carregar alunos'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchStudentById(id: number) {
+      this.loading = true
+      try {
+        const response = await axios.get(`${apiUrl}/students/${id}`)
+        this.currentStudent = response.data
+        return response.data
+      } catch (error: any) {
+        this.error = error.response?.data?.message || 'Erro ao carregar aluno'
+        throw error
       } finally {
         this.loading = false
       }
@@ -53,6 +68,10 @@ export const useStudentStore = defineStore('student', {
       } catch (error: any) {
         throw error.response?.data || { message: 'Erro ao excluir aluno' }
       }
+    },
+
+    clearCurrentStudent() {
+      this.currentStudent = null
     },
   },
 })
