@@ -27,6 +27,19 @@ class StudentController {
     }
   }
 
+  async findById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const student = await StudentService.findById(Number(req.params.id));
+      if (student) {
+        res.json(student);
+      } else {
+        res.status(404).json({ error: "Aluno não encontrado" });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async update(req: Request, res: Response, next: NextFunction) {
     const { error } = updateStudentSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
