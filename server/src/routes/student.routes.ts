@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/students", asyncHandler(StudentController.create));
 router.get("/students", asyncHandler(StudentController.findAll));
-router.get("/students/:id", StudentController.findById);
+router.get("/students/:id", asyncHandler(StudentController.findById));
 router.put("/students/:id", asyncHandler(StudentController.update));
 router.delete("/students/:id", asyncHandler(StudentController.delete));
 
