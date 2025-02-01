@@ -45,12 +45,15 @@ class StudentController {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
-      const [updated] = await StudentService.update(
+      const updatedStudent = await StudentService.update(
         Number(req.params.id),
         req.body
       );
-      if (updated) {
-        res.json({ message: "Aluno atualizado com sucesso" });
+      if (updatedStudent) {
+        res.json({
+          message: "Aluno atualizado com sucesso",
+          student: updatedStudent,
+        });
       } else {
         res.status(404).json({ error: "Aluno não encontrado" });
       }

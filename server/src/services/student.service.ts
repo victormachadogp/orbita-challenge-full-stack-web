@@ -58,10 +58,12 @@ class StudentService {
   }
 
   async update(id: number, studentData: Partial<IStudent>): Promise<Student> {
-    const student = await this.findById(id);
-    await this.checkExistingStudent(studentData, id);
+    const student = await Student.findByPk(id);
+    if (!student) {
+      throw new NotFoundError("Aluno não encontrado");
+    }
     await student.update(studentData);
-    return student;
+    return student.reload();
   }
 
   async delete(id: number): Promise<void> {

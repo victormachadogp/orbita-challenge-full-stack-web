@@ -150,7 +150,12 @@ const handleSubmit = async () => {
     }
 
     if (isEditing.value) {
-      await studentStore.updateStudent(Number(route.params.id), studentData)
+      // Enviando apenas os campos editáveis
+      const updateData = {
+        name: studentData.name,
+        email: studentData.email
+      }
+      await studentStore.updateStudent(Number(route.params.id), updateData)
       snackbar.value = {
         show: true,
         text: 'Aluno atualizado com sucesso!',
@@ -164,7 +169,7 @@ const handleSubmit = async () => {
         color: 'success'
       }
     }
-    router.push('/students') // Rota da listagem
+    router.push('/students')
   } catch (error: any) {
     snackbar.value = {
       show: true,
