@@ -64,12 +64,8 @@ class StudentController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const deleted = await StudentService.delete(Number(req.params.id));
-      if (deleted) {
-        res.json({ message: "Aluno excluído com sucesso" });
-      } else {
-        res.status(404).json({ error: "Aluno não encontrado" });
-      }
+      await StudentService.delete(Number(req.params.id));
+      res.json({ message: "Aluno excluído com sucesso" });
     } catch (error) {
       next(error);
     }

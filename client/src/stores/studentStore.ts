@@ -63,9 +63,16 @@ export const useStudentStore = defineStore('student', {
 
     async deleteStudent(id: number) {
       try {
-        await axios.delete(`${apiUrl}/students/${id}`)
-        this.students = this.students.filter((s) => s.id !== id)
+        const response = await axios.delete(`${apiUrl}/students/${id}`)
+        if (response.status === 200) {
+          this.students = this.students.filter((s) => s.id !== id)
+          return true
+        }
+        return false
       } catch (error: any) {
+        if (error.response?.status === 404) {
+          throw new Error('Aluno não encontrado')
+        }
         throw error.response?.data || { message: 'Erro ao excluir aluno' }
       }
     },
