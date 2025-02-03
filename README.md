@@ -137,6 +137,14 @@ src/
 
 ## Configuração e Execução
 
+### Banco de Dados
+
+1. Inicie o servidor PostgreSQL em sua máquina
+2. Crie um novo banco de dados:
+   ```sql
+   CREATE DATABASE student_registration;
+   ```
+
 ### Backend
 
 1. Clone o repositório:
